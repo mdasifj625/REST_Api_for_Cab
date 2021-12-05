@@ -10,7 +10,10 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const cors = require('cors');
 
-
+const userRoutes = require('./routers/userRoutes');
+const bookingRoutes = require('./routers/bookingRouts');
+const cabRoutes = require('./routers/cabRouts');
+const globalErrorHandler = require('./controllers/errorController');
 
 // Start express app
 const app = express();
@@ -18,7 +21,6 @@ app.enable('trust proxy');
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-
 
 // Global Middleware
 
@@ -92,16 +94,10 @@ app.use((req, res, next) => {
     next();
 });
 
-
-// app.use((req, res, next) => {
-//     res
-//         .set("Content-Security-Policy",
-//             "script-src 'self' https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js; object-src 'self'");
-//     next();
-// });
-
 // routs
-// app.use('/api/v1/users', userRouter);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/bookings', bookingRoutes);
+app.use('/api/v1/cabs', cabRoutes);
 
 
 // Handle unknown routs
@@ -111,6 +107,6 @@ app.all('*', (req, res, next) => {
 });
 
 // Handle the global error
-// app.use(globalErrorHandler);
+app.use(globalErrorHandler);
 
 module.exports = app;
