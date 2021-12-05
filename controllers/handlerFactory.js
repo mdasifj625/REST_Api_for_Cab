@@ -27,7 +27,7 @@ exports.updateOne = Model => catchAsync(
             runValidators: true
         });
 
-        // Return an error if tour is not found
+        // Return an error if doc is not found
         if (!doc) {
             return next(new AppError('No document found with given id', 404));
         }
@@ -46,7 +46,7 @@ exports.deleteOne = Model => catchAsync(
     async (req, res, next) => {
         const doc = await Model.findByIdAndDelete(req.params.id);
 
-        // Return an error if tour is not found
+        // Return an error if doc is not found
         if (!doc) {
             return next(new AppError('No document was found with given id', 404));
         }
@@ -67,12 +67,11 @@ exports.getOne = (Model, populateOptions) =>
             if (populateOptions) query = query.populate(populateOptions);
             const doc = await query;
 
-            // Return an error if tour is not found
+            // Return an error if doc is not found
             if (!doc) {
                 return next(new AppError('No Document found for given id', 404));
             }
 
-            // const tour = Tour.findOne({ _id: req.prams.id });
             res.status(200)
                 .json({
                     status: "success",
@@ -87,7 +86,7 @@ exports.getOne = (Model, populateOptions) =>
 exports.getAll = Model => catchAsync(
     async (req, res, next) => {
 
-        // To Allow for nested Get Reviews on Tour (Hack)
+        // To Allow for nested Get Reviews
         let filter = {};
         if (req.params.userId) filter = { user: req.params.userId };
 

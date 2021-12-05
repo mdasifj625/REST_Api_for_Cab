@@ -12,13 +12,13 @@ router
     .get('/bookCab/:pickup/:drop',
         bookingController.findNearbyCab,
         bookingController.driverConfirmation,
+        bookingController.arangeCab,
         bookingController.bookCab);
 
 router
-    .route('/')
-    .get(bookingController.getAllMyBookings)
-    .post(bookingController.createBooking);
+    .get('/getAllMyBookings', bookingController.getAllMyBookings);
 
 router
     .get('/:id', bookingController.getBooking);
+
 module.exports = router;

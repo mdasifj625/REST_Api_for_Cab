@@ -13,32 +13,14 @@ exports.findNearbyCab = catchAsync(async (req, res, next) => {
 
     if (!lat || !lng) next(new AppError('please provide latitude and longitude', 400));
 
-    // Agregated result of cab
-    const cabs = await Cab.aggregate([
-        {
-            $geoNear: {
-                near: {
-                    type: 'Point',
-                    coordinates: [+lng, +lat]
-                },
-                distanceField: 'distance',
-                maxDistance: 3000,
-                distanceMultiplier: 0.001
-            }
-        },
+    const radius = 4 / 6378.1;  // within Km 
 
-        {
-            $match: { booked: false }
-        },
-        {
-            $project: {
-                distance: 1,
-                booked: 1,
-                location: 1,
-                driver: 1
-            }
+    const cabs = await Cab.find({
+        booked: false,
+        location: {
+            $geoWithin: { $centerSphere: [[lng, lat], radius] }
         }
-    ]);
+    });
 
     // If cabs are not available nearby
     if (cabs.length === 0) {
@@ -71,42 +53,43 @@ exports.driverConfirmation = catchAsync(async (req, res, next) => {
 
 
 // Finaly book the cab and save to database
-exports.bookCab = catchAsync(async (req, res, next) => {
+exports.arangeCab = catchAsync(async (req, res, next) => {
 
+    const cab = req.query.cab;
+    const user = req.user;
     const { pickup, drop } = req.params;
     const from = pickup.split(',');
     const to = drop.split(',');
 
+    // Calculating the distance between two points
     const distance = distanceCalculator(from[0], from[1], to[0], to[1]);
 
     const fare = Math.ceil(10 * distance);
 
-    console.log(`
-    pickup: ${pickup}
-    drop: ${drop}
-    distance: ${distance}
-    fare: ${fare}
-    `);
+    // Assigning the booking data to body for next middleware
+    req.body = {
+        cab: cab._id,
+        user,
+        from: {
+            "coordinates": from,
+            address: 'Dummy Pickup address'
+        },
+        distance,
+        to: {
+            "coordinates": to,
+            address: 'Dummy drop address'
+        },
+        fare
+    }
 
-    // const trip = await Trip.create({
-    //     fare,
-    //     "from": { "type": "Point", "coordinates": from },
-    //     "to": { "type": "Point", "coordinates": to },
-    //     "user": req.user._id
-    // });
+    // Marking the cab as booked
+    cab.booked = true;
+    await cab.save({ validateBeforeSave: false });
 
-    // // cab booked
-    res.status(200).json({
-        status: 'success',
-        data: {
-            status: 'cab booked successfully',
-            data: req.query.cab
-        }
-    });
+    next();
 
 });
 
-
-exports.createBooking = factory.createOne(Booking);
+exports.bookCab = factory.createOne(Booking);
 exports.getBooking = factory.getOne(Booking);
 exports.getAllMyBookings = factory.getAll(Booking);

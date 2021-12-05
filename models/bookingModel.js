@@ -12,7 +12,7 @@ const bookingSchema = new mongoose.Schema(
             ref: 'User',
             required: [true, 'Booking must belong to user']
         },
-        pickupLocation: {
+        from: {
             // GeoJSON
             type: {
                 type: String,
@@ -22,7 +22,7 @@ const bookingSchema = new mongoose.Schema(
             coordinates: [Number],
             address: String
         },
-        dropLocation: {
+        to: {
             // GeoJSON
             type: {
                 type: String,
@@ -32,7 +32,8 @@ const bookingSchema = new mongoose.Schema(
             coordinates: [Number],
             address: String
         },
-        price: {
+        distance: Number,
+        fare: {
             type: Number,
             required: [true, `Booking must have a price.`]
         },
@@ -43,12 +44,11 @@ const bookingSchema = new mongoose.Schema(
     }
 );
 
-// Middleware to populate the user and tour_name
+// Middleware to populate the user and cab
 bookingSchema.pre(/^find/, function (next) {
     this.populate('user')
         .populate({
-            path: 'tour',
-            select: 'name'
+            path: 'cab'
         });
 
     next();
