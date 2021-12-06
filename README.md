@@ -2,10 +2,10 @@
 
 ### This API is created using following technologies and framework.
 
-*** JavaScript(Node.js)
-*** express
-*** mongoose(mongoDb)
-*** mongoose(mongoDb)
+* JavaScript(Node.js)
+* express
+* mongoose(mongoDb)
+* mongoose(mongoDb)
 
 # API Usage
 
