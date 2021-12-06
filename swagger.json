@@ -1,0 +1,452 @@
+{
+	"openapi": "3.0.1",
+
+	"info": {
+		"version": "1.3.0",
+		"title": "REST Api for Cab",
+		"description": "This is an api for booking cab",
+		"contact": {
+			"name": "Md Asif Jawed",
+			"email": "asif.jawed@solulab.com"
+		},
+		"license": {
+			"name": "Apache 2.0",
+			"url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+		}
+	},
+
+	"servers": [
+		{
+			"url": "http://localhost:3000/api/v1",
+			"description": "Development server"
+		},
+		{
+			"url": "https://rest-api-cab.herokuapp.com/api/v1",
+			"description": "Production server"
+		}
+	],
+
+	"basePath": "/",
+
+	"tags": [
+		{
+			"name": "Cab Booking"
+		}
+	],
+
+	"paths": {
+		"/users/signup": {
+			"post": {
+				"tags": ["Authantication"],
+				"description": "Create new user in system",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"example": "Md Asif Jawed"
+									},
+									"email": {
+										"type": "string",
+										"example": "asif@example.com"
+									},
+									"mobileNo": {
+										"type": "Number",
+										"example": "9504595045"
+									},
+									"role": {
+										"type": "string",
+										"example": "user, driver, admin"
+									},
+									"password": {
+										"type": "string",
+										"example": "test1234"
+									},
+									"passwordConfirm": {
+										"type": "string",
+										"example": "test1234"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "New user is created"
+					}
+				}
+			}
+		},
+
+		"/users/signin": {
+			"post": {
+				"tags": ["Authantication"],
+				"description": "Login existing user",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"email": {
+										"type": "string",
+										"example": "asif@example.com"
+									},
+									"password": {
+										"type": "string",
+										"example": "test1234"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "user loggedin"
+					}
+				}
+			}
+		},
+
+		"/users/logout": {
+			"post": {
+				"tags": ["Authantication"],
+				"description": "Login existing user",
+
+				"responses": {
+					"200": {
+						"description": "user logged out"
+					}
+				}
+			}
+		},
+
+		"/users": {
+			"get": {
+				"tags": ["User"],
+				"description": "Get All the registered users 'I required admid previlage user must be loged in as admin'",
+				"produces": ["application/json"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "user details"
+					}
+				}
+			}
+		},
+
+		"/users/me": {
+			"get": {
+				"tags": ["User"],
+				"description": "Get the details of currently loged in user",
+				"produces": ["application/json"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "user details"
+					}
+				}
+			}
+		},
+
+		"/users/updateme": {
+			"patch": {
+				"tags": ["User"],
+				"description": "Update the details of currently loged in user",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"example": "Sonu Sudh"
+									},
+									"mobileNo": {
+										"type": "Number",
+										"example": "9501212345"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User updated successfully"
+					}
+				}
+			}
+		},
+
+		"/users/deleteme": {
+			"delete": {
+				"tags": ["User"],
+				"description": "Mark the currently logedin user as inactive",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Account deleted"
+					}
+				}
+			}
+		},
+
+		"/users/{id}": {
+			"get": {
+				"tags": ["User"],
+				"description": "Get a user by their id 'only admin can do this'",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"example": "61ad29e08f2a228790550aca",
+						"description": "Id of the particular user"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "User Information"
+					}
+				}
+			},
+
+			"patch": {
+				"tags": ["User"],
+				"description": "Update the user information by their id'only admin can do this'",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"example": "61ad29e08f2a228790550aca",
+						"description": "Id of the particular user"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"example": "Sonu Sudh"
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "User Updated Successfully"
+					}
+				}
+			},
+
+			"delete": {
+				"tags": ["User"],
+				"description": "Delete the user based on their id'only admin can do this'",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"example": "61ad29e08f2a228790550aca",
+						"description": "Id of the particular user"
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "user loggedin"
+					}
+				}
+			}
+		},
+
+		"/cabs": {
+			"post": {
+				"tags": ["Cab"],
+				"description": "Create new Cab 'only admin can do this'",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"driver": {
+										"type": "object",
+										"example": "61a77399189374cd6a88d57f"
+									},
+									"location": {
+										"type": "object",
+										"properties": {
+											"coordinates": {
+												"type": "array",
+												"example": [
+													26.606198, 84.834574
+												]
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Cab created"
+					}
+				}
+			},
+
+			"get": {
+				"tags": ["Cab"],
+				"description": "Get all the cabs 'only admin can do this'",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+
+				"responses": {
+					"200": {
+						"description": "Cab created"
+					}
+				}
+			}
+		},
+
+		"/bookings/bookCab/{pickup}/{drop}": {
+			"get": {
+				"tags": ["Booking"],
+				"description": "Book the cab by providing pickup and drop coordinates",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "pickup",
+						"in": "path",
+						"example": "26.604856,84.845278",
+						"description": "pickup location coordinates"
+					},
+					{
+						"name": "drop",
+						"in": "path",
+						"example": "26.621897,84.872960",
+						"description": "drop location coordinates"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Cab booked"
+					}
+				}
+			}
+		},
+
+		"/bookings/{bookingId}": {
+			"get": {
+				"tags": ["Booking"],
+				"description": "Get a particular booking by their id",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "bookingId",
+						"in": "path",
+						"example": "61ad29e08f2a228790550aca",
+						"description": "Id of the particular booking"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Booking Details"
+					}
+				}
+			}
+		},
+
+		"/bookings/getAllMyBookings": {
+			"get": {
+				"tags": ["Booking"],
+				"description": "Get all the bookings booked by currently logged in user",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+
+				"responses": {
+					"200": {
+						"description": "Booking Details"
+					}
+				}
+			}
+		}
+	},
+
+	"components": {
+		"securitySchemes": {
+			"bearerAuth": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	}
+}

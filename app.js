@@ -19,8 +19,9 @@ const globalErrorHandler = require('./controllers/errorController');
 const app = express();
 app.enable('trust proxy');
 
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
+// Swagger implementation
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 // Global Middleware
 
@@ -98,6 +99,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/cabs', cabRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 // Handle unknown routs
