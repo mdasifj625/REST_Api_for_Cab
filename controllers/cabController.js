@@ -1,17 +1,12 @@
-const Cab = require('../models/cabModel');
-const factory = require('./handlerFactory');
+import Cab from '../models/cabModel.js';
+import { createOne, getOne, getAll, updateOne, deleteOne } from './handlerFactory.js';
 
-// Create A Cab
-exports.createCab = factory.createOne(Cab);
+export const createCab = createOne(Cab);
 
-// Get single cab details
-exports.getCab = factory.getOne(Cab);
+export const getCab = getOne(Cab);
 
-// Get all cab details
-exports.getAllCabs = factory.getAll(Cab);
+export const getAllCabs = getAll(Cab);
 
-// Update cab details
-exports.updateCab = factory.updateOne(Cab);
+export const updateCab = updateOne(Cab);
 
-// Delete the cab
-exports.deleteCAb = factory.deleteOne(Cab);
+export const deleteCAb = deleteOne(Cab);

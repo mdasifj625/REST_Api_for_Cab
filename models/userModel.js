@@ -1,9 +1,12 @@
-const crypto = require('crypto');
-const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
+import { randomBytes, createHash } from 'crypto';
+import mongoose from 'mongoose';
+const { Schema, model } = mongoose;
+import validator from 'validator';
+const { isEmail } = validator;
+import bcryptjs from 'bcryptjs';
+const { hash, compare } = bcryptjs;
 // Creating User Schema
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: [true, 'Please tell us your name.']
@@ -13,11 +16,11 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Please provide your email'],
         unique: true,
         lowercase: true,
-        validate: [validator.isEmail, 'Please provide a valid email']
+        validate: [isEmail, 'Please provide a valid email']
     },
-    mobileNo:{
+    mobileNo: {
         type: Number,
-        required:[true,'Please provide mobile no']
+        required: [true, 'Please provide mobile no']
     },
     role: {
         type: String,
@@ -58,7 +61,7 @@ userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 
     // Encrypt and and stare the password
-    this.password = await bcrypt.hash(this.password, 12);
+    this.password = await hash(this.password, 12);
 
     // Set the confirm password to undefined because we no longer need this
     this.passwordConfirm = undefined;
@@ -84,7 +87,7 @@ userSchema.pre(/^find/, function (next) {
 
 // Create instance method that will check password is correct or not
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
-    return await bcrypt.compare(candidatePassword, userPassword);
+    return await compare(candidatePassword, userPassword);
 }
 
 // Instance method the check if user has changed password after token was issued
@@ -102,10 +105,9 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
 
 // Instance method to generate random reset token
 userSchema.methods.createPasswordResetToken = function () {
-    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetToken = randomBytes(32).toString('hex');
 
-    this.passwordResetToken = crypto
-        .createHash('sha256')
+    this.passwordResetToken = createHash('sha256')
         .update(resetToken)
         .digest('hex');
 
@@ -117,6 +119,6 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 // Create Model out of Schema
-const User = mongoose.model('User', userSchema);
+const User = model('User', userSchema);
 
-module.exports = User;
+export default User;

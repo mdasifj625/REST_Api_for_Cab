@@ -1,24 +1,24 @@
-const express = require('express');
-const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
-const router = express.Router();
+import { Router } from 'express';
+import { protect, restrictTo } from '../controllers/authController.js';
+import { findNearbyCab, driverConfirmation, arangeCab, bookCab, getAllMyBookings, getBooking } from '../controllers/bookingController.js';
+const router = Router();
 
-router.use(authController.protect)
+router.use(protect)
 
-router.use(authController.restrictTo('user'));
+router.use(restrictTo('user'));
 
 
 router
     .get('/bookCab/:pickup/:drop',
-        bookingController.findNearbyCab,
-        bookingController.driverConfirmation,
-        bookingController.arangeCab,
-        bookingController.bookCab);
+        findNearbyCab,
+        driverConfirmation,
+        arangeCab,
+        bookCab);
 
 router
-    .get('/getAllMyBookings', bookingController.getAllMyBookings);
+    .get('/getAllMyBookings', getAllMyBookings);
 
 router
-    .get('/:id', bookingController.getBooking);
+    .get('/:id', getBooking);
 
-module.exports = router;
+export default router;

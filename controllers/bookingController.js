@@ -1,13 +1,12 @@
-const Booking = require('../models/bookingModel');
-const Cab = require('../models/cabModel');
-const factory = require('./handlerFactory');
-const AppError = require('../utils/appError');
-const catchAsync = require('../utils/catchAsync');
-const distanceCalculator = require('../helper/distanceCalculator');
+import Booking from '../models/bookingModel.js';
+import Cab from '../models/cabModel.js';
+import { createOne, getOne, getAll } from './handlerFactory.js';
+import AppError from '../utils/appError.js';
+import {catchAsync} from '../utils/catchAsync.js';
+import distanceCalculator from '../helper/distanceCalculator.js';
 
 
-// Find the cabs nearby
-exports.findNearbyCab = catchAsync(async (req, res, next) => {
+export const findNearbyCab = catchAsync(async (req, res, next) => {
 
     const [lat, lng] = req.params.pickup.split(',');
 
@@ -37,8 +36,7 @@ exports.findNearbyCab = catchAsync(async (req, res, next) => {
 
 });
 
-// Book cab based on driver response
-exports.driverConfirmation = catchAsync(async (req, res, next) => {
+export const driverConfirmation = catchAsync(async (req, res, next) => {
 
     const cabs = req.query.cabs;
 
@@ -52,8 +50,7 @@ exports.driverConfirmation = catchAsync(async (req, res, next) => {
 });
 
 
-// Finaly book the cab and save to database
-exports.arangeCab = catchAsync(async (req, res, next) => {
+export const arangeCab = catchAsync(async (req, res, next) => {
 
     const cab = req.query.cab;
     const user = req.user;
@@ -90,6 +87,6 @@ exports.arangeCab = catchAsync(async (req, res, next) => {
 
 });
 
-exports.bookCab = factory.createOne(Booking);
-exports.getBooking = factory.getOne(Booking);
-exports.getAllMyBookings = factory.getAll(Booking);
+export const bookCab = createOne(Booking);
+export const getBooking = getOne(Booking);
+export const getAllMyBookings = getAll(Booking);

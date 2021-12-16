@@ -1,27 +1,28 @@
-const path = require('path');
-const express = require('express');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
-const hpp = require('hpp');
-const cookieParser = require('cookie-parser');
-const compression = require('compression');
-const cors = require('cors');
+import path from 'path';
+const __dirname = path.resolve();
+import express from 'express';
+import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import hpp from 'hpp';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+import cors from 'cors';
 
-const userRoutes = require('./routers/userRoutes');
-const bookingRoutes = require('./routers/bookingRouts');
-const cabRoutes = require('./routers/cabRouts');
-const globalErrorHandler = require('./controllers/errorController');
+import userRoutes from './routers/userRoutes.js';
+import bookingRoutes from './routers/bookingRouts.js';
+import cabRoutes from './routers/cabRouts.js';
+import globalErrorHandler from './controllers/errorController.js';
 
 // Start express app
 const app = express();
 app.enable('trust proxy');
 
 // Swagger implementation
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
+// import { serve, setup } from 'swagger-ui-express';
+// import swaggerDocument from './swagger.json'
 
 // Global Middleware
 
@@ -99,7 +100,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/bookings', bookingRoutes);
 app.use('/api/v1/cabs', cabRoutes);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use('/api-docs', serve, setup(swaggerDocument));
 
 
 // Handle unknown routs
@@ -111,4 +112,4 @@ app.all('*', (req, res, next) => {
 // Handle the global error
 app.use(globalErrorHandler);
 
-module.exports = app;
+export default app;

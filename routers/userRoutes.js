@@ -1,52 +1,52 @@
-const express = require('express');
-const userController = require('../controllers/userController');
-const authController = require('../controllers/authController');
+import { Router } from 'express';
+import { getMe, getUser, updateMe, deleteMe, getAllUsers, createUser, updateUser, deleteUser } from '../controllers/userController.js';
+import { signup, signin, logout, protect, restrictTo } from '../controllers/authController.js';
 
-const router = express.Router();
+const router = Router();
 
 router
     .post('/signup',
-        authController.signup);
+        signup);
 
 router
     .post('/signin',
-        authController.signin);
+        signin);
 
 router
     .get('/logout',
-        authController.logout);
+        logout);
 
 
 // Protect all the rout after this point
-router.use(authController.protect);
+router.use(protect);
 
 router
     .get('/me',
-        userController.getMe,
-        userController.getUser);
+        getMe,
+        getUser);
 
 router
     .patch('/updateme',
-        userController.updateMe);
+        updateMe);
 
 router
     .delete('/deleteme',
-        userController.deleteMe);
+        deleteMe);
 
 
 // Restrict to only admin after this point
-router.use(authController.restrictTo('admin'));
+router.use(restrictTo('admin'));
 
 router
     .route('/')
-    .get(userController.getAllUsers)
-    .post(userController.createUser);
+    .get(getAllUsers)
+    .post(createUser);
 
 router
     .route('/:id')
-    .get(userController.getUser)
-    .patch(userController.updateUser)
-    .delete(userController.deleteUser);
+    .get(getUser)
+    .patch(updateUser)
+    .delete(deleteUser);
 
 
-module.exports = router;
+export default router;

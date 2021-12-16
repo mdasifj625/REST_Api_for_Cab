@@ -29,4 +29,4 @@ const getDistanceInKilometer = (lat1, lon1, lat2, lon2) => {
     return round(radiusOfEarthKm * c);
 }
 
-module.exports = getDistanceInKilometer;
+export default getDistanceInKilometer;

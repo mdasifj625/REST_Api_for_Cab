@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-// const User = require('./../model/userModel');
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
 
 // Create Schema
-const cabSchema = new mongoose.Schema(
+const cabSchema = new Schema(
     {
         booked: {
             type: Boolean,
@@ -18,7 +18,7 @@ const cabSchema = new mongoose.Schema(
             coordinates: [Number] // [lng, lat]
         },
         driver: {
-            type: mongoose.Schema.ObjectId,
+            type: Schema.ObjectId,
             ref: 'User',
             required: [true, 'A Cab must havae a driver']
         }
@@ -38,9 +38,9 @@ cabSchema.index({ location: '2d' });
 
 // Model from schema
 
-const Cab = mongoose.model('Cab', cabSchema);
+const Cab = model('Cab', cabSchema);
 
-module.exports = Cab;
+export default Cab;
 
 
 

@@ -1,20 +1,20 @@
-const express = require('express');
-const authController = require('../controllers/authController');
-const cabController = require('../controllers/cabController');
-const router = express.Router();
+import { Router } from 'express';
+import { protect, restrictTo } from '../controllers/authController.js';
+import { getAllCabs, createCab, getCab, updateCab, deleteCAb } from '../controllers/cabController.js';
+const router = Router();
 
-router.use(authController.protect)
+router.use(protect)
 
-router.use(authController.restrictTo('admin'));
+router.use(restrictTo('admin'));
 
 router
     .route('/')
-    .get(cabController.getAllCabs)
-    .post(cabController.createCab);
+    .get(getAllCabs)
+    .post(createCab);
 
 router
     .route('/:id')
-    .get(cabController.getCab)
-    .patch(cabController.updateCab)
-    .delete(cabController.deleteCAb);
-module.exports = router;
+    .get(getCab)
+    .patch(updateCab)
+    .delete(deleteCAb);
+export default router;

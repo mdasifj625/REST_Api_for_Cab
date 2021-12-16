@@ -1,14 +1,14 @@
-const express = require('express');
-const AppError = require('../utils/appError');
-const User = require('../models/userModel');
-const catchAsync = require('../utils/catchAsync');
-const factory = require('./handlerFactory');
+import express, { json, urlencoded } from 'express';
+import AppError from '../utils/appError.js';
+import User from '../models/userModel.js';
+import { catchAsync } from '../utils/catchAsync.js';
+import { getOne, getAll, updateOne, deleteOne } from './handlerFactory.js';
 
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded(
+app.use(json());
+app.use(urlencoded(
     {
         extended: true
     }
@@ -22,7 +22,7 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 };
 
-exports.createUser = (req, res) => {
+export function createUser(req, res) {
     res.status(500)
         .json({
             status: 'error',
@@ -31,13 +31,12 @@ exports.createUser = (req, res) => {
 }
 
 // Update the id getting form logedin user to paramaete
-exports.getMe = (req, res, next) => {
+export function getMe(req, res, next) {
     req.params.id = req.user.id;
     next();
 }
 
-// Function to update loged in user
-exports.updateMe = catchAsync(async (req, res, next) => {
+export const updateMe = catchAsync(async (req, res, next) => {
     // 1) Create error if user POSTs password data 
     if (req.body.password || req.body.passwordConfirm) {
         return next(
@@ -66,10 +65,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     });
 });
 
-// Function to deactivate the user
-exports.deleteMe = catchAsync(
+export const deleteMe = catchAsync(
     async (req, res, next) => {
-        await User.findByIdAndUpdate(req.user.id, { active: false });
+        await findByIdAndUpdate(req.user.id, { active: false });
 
         res.status(204).json({
             status: 'success',
@@ -79,14 +77,10 @@ exports.deleteMe = catchAsync(
 );
 
 
-// Get single user
-exports.getUser = factory.getOne(User);
+export const getUser = getOne(User);
 
-// Get all user
-exports.getAllUsers = factory.getAll(User);
+export const getAllUsers = getAll(User);
 
-// Update user Don't update password with this
-exports.updateUser = factory.updateOne(User);
+export const updateUser = updateOne(User);
 
-// Delete the user Don't update password with this
-exports.deleteUser = factory.deleteOne(User);
+export const deleteUser = deleteOne(User);

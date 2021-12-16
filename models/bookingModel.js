@@ -1,14 +1,15 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+const { Schema, model } = mongoose;
 
 // Creating Review Schema
-const bookingSchema = new mongoose.Schema(
+const bookingSchema = new Schema(
     {
         cab: {
-            type: mongoose.Schema.ObjectId,
+            type: Schema.ObjectId,
             ref: 'Cab'
         },
         user: {
-            type: mongoose.Schema.ObjectId,
+            type: Schema.ObjectId,
             ref: 'User',
             required: [true, 'Booking must belong to user']
         },
@@ -56,6 +57,6 @@ bookingSchema.pre(/^find/, function (next) {
 
 
 // Create Model out of Schema
-const Booking = mongoose.model('Booking', bookingSchema);
+const Booking = model('Booking', bookingSchema);
 
-module.exports = Booking;
+export default Booking;
